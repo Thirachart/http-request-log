@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-request-logger
+  namespace: ole-app1
+  labels:
+    app: http-request-logger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-request-logger
+  template:
+    metadata:
+      labels:
+        app: http-request-logger
+    spec:
+      containers:
+        - name: http-request-logger
+          image: snowbee/http-request-logger:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-request-logger
+  namespace: ole-app1
+spec:
+  selector:
+    app: http-request-logger
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
